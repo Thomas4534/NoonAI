@@ -1,176 +1,115 @@
-import Image from "next/image";
-import WorflowImg01 from "@/public/images/workflow-01.png";
-import WorflowImg02 from "@/public/images/workflow-02.png";
-import WorflowImg03 from "@/public/images/workflow-03.png";
+"use client";
+
+import { useEffect, useState } from "react";
 import Spotlight from "@/components/spotlight";
 
 export default function Workflows() {
+  const [stars, setStars] = useState<
+    { size: number; top: number; left: number; opacity: number }[]
+  >([]);
+  const [fadeIn, setFadeIn] = useState(false);
+
+  // ✨ Generate random stars client-side (prevents hydration mismatch)
+  useEffect(() => {
+    const generatedStars = Array.from({ length: 25 }).map(() => ({
+      size: Math.random() * 3 + 1, // 1–4px
+      top: Math.random() * 100,
+      left: Math.random() * 100,
+      opacity: Math.random() * 0.7 + 0.3,
+    }));
+    setStars(generatedStars);
+
+    const timer = setTimeout(() => setFadeIn(true), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <section>
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+    <section className="relative bg-gradient-to-b from-[#ff9b40] via-[#1a0f00] to-black pt-48 md:pt-56 overflow-hidden">
+      {/* 🌌 Starfield Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {stars.map((star, i) => (
+          <div
+            key={i}
+            className={`absolute rounded-full bg-white transition-opacity duration-[2000ms] ${
+              fadeIn ? "opacity-100" : "opacity-0"
+            }`}
+            style={{
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              top: `${star.top}%`,
+              left: `${star.left}%`,
+              boxShadow: `0 0 ${star.size * 4}px rgba(255,255,255,${star.opacity})`,
+            }}
+          ></div>
+        ))}
+      </div>
+
+      {/* 🔥 Subtle ambient glow at the top */}
+      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#ff9b40]/40 via-transparent to-transparent blur-3xl opacity-70 pointer-events-none"></div>
+
+      {/* 🌠 Content */}
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
         <div className="pb-12 md:pb-20">
           {/* Section header */}
-          <div className="mx-auto max-w-3xl pb-12 text-center md:pb-20">
-            <div className="inline-flex items-center gap-3 pb-3 before:h-px before:w-8 before:bg-linear-to-r before:from-transparent before:to-indigo-200/50 after:h-px after:w-8 after:bg-linear-to-l after:from-transparent after:to-indigo-200/50">
-              <span className="inline-flex bg-linear-to-r from-indigo-500 to-indigo-200 bg-clip-text text-transparent">
-                Tailored Workflows
+          <div className="mx-auto max-w-3xl pb-12 text-center md:pb-20 relative z-10">
+            <div className="inline-flex items-center gap-3 pb-3 before:h-px before:w-8 before:bg-gradient-to-r before:from-transparent before:to-[#ff9b40]/60 after:h-px after:w-8 after:bg-gradient-to-l after:from-transparent after:to-[#ff9b40]/60">
+              <span className="inline-flex bg-gradient-to-r from-[#ff9b40] to-[#ffb374] bg-clip-text text-transparent">
+                Smart Workflows
               </span>
             </div>
-            <h2 className="animate-[gradient_6s_linear_infinite] bg-[linear-gradient(to_right,var(--color-gray-200),var(--color-indigo-200),var(--color-gray-50),var(--color-indigo-300),var(--color-gray-200))] bg-[length:200%_auto] bg-clip-text pb-4 font-nacelle text-3xl font-semibold text-transparent md:text-4xl">
-              Map your product journey
+
+            <h2 className="animate-[gradient_6s_linear_infinite] bg-[linear-gradient(to_right,var(--color-gray-200),#ffb374,#ff9b40,var(--color-gray-50),#ffb374,var(--color-gray-200))] bg-[length:200%_auto] bg-clip-text pb-4 font-nacelle text-3xl font-semibold text-transparent md:text-4xl">
+              Automate. Adapt. Accelerate.
             </h2>
-            <p className="text-lg text-indigo-200/65">
-              Simple and elegant interface to start collaborating with your team
-              in minutes. It seamlessly integrates with your code and your
-              favorite programming languages.
+
+            <p className="text-lg text-white/80">
+              NoonAI builds intelligent pipelines that learn, automate, and
+              scale alongside your team — from concept to completion.
             </p>
           </div>
-          {/* Spotlight items */}
-          <Spotlight className="group mx-auto grid max-w-sm items-start gap-6 lg:max-w-none lg:grid-cols-3">
-            {/* Card 1 */}
-            <a
-              className="group/card relative h-full overflow-hidden rounded-2xl bg-gray-800 p-px before:pointer-events-none before:absolute before:-left-40 before:-top-40 before:z-10 before:h-80 before:w-80 before:translate-x-[var(--mouse-x)] before:translate-y-[var(--mouse-y)] before:rounded-full before:bg-indigo-500/80 before:opacity-0 before:blur-3xl before:transition-opacity before:duration-500 after:pointer-events-none after:absolute after:-left-48 after:-top-48 after:z-30 after:h-64 after:w-64 after:translate-x-[var(--mouse-x)] after:translate-y-[var(--mouse-y)] after:rounded-full after:bg-indigo-500 after:opacity-0 after:blur-3xl after:transition-opacity after:duration-500 hover:after:opacity-20 group-hover:before:opacity-100"
-              href="#0"
-            >
-              <div className="relative z-20 h-full overflow-hidden rounded-[inherit] bg-gray-950 after:absolute after:inset-0 after:bg-linear-to-br after:from-gray-900/50 after:via-gray-800/25 after:to-gray-900/50">
-                {/* Arrow */}
-                <div
-                  className="absolute right-6 top-6 flex h-8 w-8 items-center justify-center rounded-full border border-gray-700/50 bg-gray-800/65 text-gray-200 opacity-0 transition-opacity group-hover/card:opacity-100"
-                  aria-hidden="true"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={9}
-                    height={8}
-                    fill="none"
-                  >
-                    <path
-                      fill="#F4F4F5"
-                      d="m4.92 8-.787-.763 2.733-2.68H0V3.443h6.866L4.133.767 4.92 0 9 4 4.92 8Z"
-                    />
-                  </svg>
-                </div>
-                {/* Image */}
-                <Image
-                  className="inline-flex"
-                  src={WorflowImg01}
-                  width={350}
-                  height={288}
-                  alt="Workflow 01"
-                />
-                {/* Content */}
-                <div className="p-6">
-                  <div className="mb-3">
-                    <span className="btn-sm relative rounded-full bg-gray-800/40 px-2.5 py-0.5 text-xs font-normal before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:border before:border-transparent before:[background:linear-gradient(to_bottom,--theme(--color-gray-700/.15),--theme(--color-gray-700/.5))_border-box] before:[mask-composite:exclude_!important] before:[mask:linear-gradient(white_0_0)_padding-box,_linear-gradient(white_0_0)] hover:bg-gray-800/60">
-                      <span className="bg-linear-to-r from-indigo-500 to-indigo-200 bg-clip-text text-transparent">
-                        Built-in Tools
-                      </span>
-                    </span>
-                  </div>
-                  <p className="text-indigo-200/65">
-                    Streamline the product development flow with a content
-                    platform that's aligned across specs and insights.
-                  </p>
-                </div>
-              </div>
-            </a>
-            {/* Card 2 */}
-            <a
-              className="group/card relative h-full overflow-hidden rounded-2xl bg-gray-800 p-px before:pointer-events-none before:absolute before:-left-40 before:-top-40 before:z-10 before:h-80 before:w-80 before:translate-x-[var(--mouse-x)] before:translate-y-[var(--mouse-y)] before:rounded-full before:bg-indigo-500/80 before:opacity-0 before:blur-3xl before:transition-opacity before:duration-500 after:pointer-events-none after:absolute after:-left-48 after:-top-48 after:z-30 after:h-64 after:w-64 after:translate-x-[var(--mouse-x)] after:translate-y-[var(--mouse-y)] after:rounded-full after:bg-indigo-500 after:opacity-0 after:blur-3xl after:transition-opacity after:duration-500 hover:after:opacity-20 group-hover:before:opacity-100"
-              href="#0"
-            >
-              <div className="relative z-20 h-full overflow-hidden rounded-[inherit] bg-gray-950 after:absolute after:inset-0 after:bg-linear-to-br after:from-gray-900/50 after:via-gray-800/25 after:to-gray-900/50">
-                {/* Arrow */}
-                <div
-                  className="absolute right-6 top-6 flex h-8 w-8 items-center justify-center rounded-full border border-gray-700/50 bg-gray-800/65 text-gray-200 opacity-0 transition-opacity group-hover/card:opacity-100"
-                  aria-hidden="true"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={9}
-                    height={8}
-                    fill="none"
-                  >
-                    <path
-                      fill="#F4F4F5"
-                      d="m4.92 8-.787-.763 2.733-2.68H0V3.443h6.866L4.133.767 4.92 0 9 4 4.92 8Z"
-                    />
-                  </svg>
-                </div>
-                {/* Image */}
-                <Image
-                  className="inline-flex"
-                  src={WorflowImg02}
-                  width={350}
-                  height={288}
-                  alt="Workflow 02"
-                />
-                {/* Content */}
-                <div className="p-6">
-                  <div className="mb-3">
-                    <span className="btn-sm relative rounded-full bg-gray-800/40 px-2.5 py-0.5 text-xs font-normal before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:border before:border-transparent before:[background:linear-gradient(to_bottom,--theme(--color-gray-700/.15),--theme(--color-gray-700/.5))_border-box] before:[mask-composite:exclude_!important] before:[mask:linear-gradient(white_0_0)_padding-box,_linear-gradient(white_0_0)] hover:bg-gray-800/60">
-                      <span className="bg-linear-to-r from-indigo-500 to-indigo-200 bg-clip-text text-transparent">
-                        Scale Instantly
-                      </span>
-                    </span>
-                  </div>
-                  <p className="text-indigo-200/65">
-                    Streamline the product development flow with a content
-                    platform that's aligned across specs and insights.
-                  </p>
-                </div>
-              </div>
-            </a>
-            {/* Card 3 */}
-            <a
-              className="group/card relative h-full overflow-hidden rounded-2xl bg-gray-800 p-px before:pointer-events-none before:absolute before:-left-40 before:-top-40 before:z-10 before:h-80 before:w-80 before:translate-x-[var(--mouse-x)] before:translate-y-[var(--mouse-y)] before:rounded-full before:bg-indigo-500/80 before:opacity-0 before:blur-3xl before:transition-opacity before:duration-500 after:pointer-events-none after:absolute after:-left-48 after:-top-48 after:z-30 after:h-64 after:w-64 after:translate-x-[var(--mouse-x)] after:translate-y-[var(--mouse-y)] after:rounded-full after:bg-indigo-500 after:opacity-0 after:blur-3xl after:transition-opacity after:duration-500 hover:after:opacity-20 group-hover:before:opacity-100"
-              href="#0"
-            >
-              <div className="relative z-20 h-full overflow-hidden rounded-[inherit] bg-gray-950 after:absolute after:inset-0 after:bg-linear-to-br after:from-gray-900/50 after:via-gray-800/25 after:to-gray-900/50">
-                {/* Arrow */}
-                <div
-                  className="absolute right-6 top-6 flex h-8 w-8 items-center justify-center rounded-full border border-gray-700/50 bg-gray-800/65 text-gray-200 opacity-0 transition-opacity group-hover/card:opacity-100"
-                  aria-hidden="true"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={9}
-                    height={8}
-                    fill="none"
-                  >
-                    <path
-                      fill="#F4F4F5"
-                      d="m4.92 8-.787-.763 2.733-2.68H0V3.443h6.866L4.133.767 4.92 0 9 4 4.92 8Z"
-                    />
-                  </svg>
-                </div>
-                {/* Image */}
-                <Image
-                  className="inline-flex"
-                  src={WorflowImg03}
-                  width={350}
-                  height={288}
-                  alt="Workflow 03"
-                />
-                {/* Content */}
-                <div className="p-6">
-                  <div className="mb-3">
-                    <span className="btn-sm relative rounded-full bg-gray-800/40 px-2.5 py-0.5 text-xs font-normal before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:border before:border-transparent before:[background:linear-gradient(to_bottom,--theme(--color-gray-700/.15),--theme(--color-gray-700/.5))_border-box] before:[mask-composite:exclude_!important] before:[mask:linear-gradient(white_0_0)_padding-box,_linear-gradient(white_0_0)] hover:bg-gray-800/60">
-                      <span className="bg-linear-to-r from-indigo-500 to-indigo-200 bg-clip-text text-transparent">
-                        Tailored Flows
-                      </span>
-                    </span>
-                  </div>
-                  <p className="text-indigo-200/65">
-                    Streamline the product development flow with a content
-                    platform that's aligned across specs and insights.
-                  </p>
-                </div>
-              </div>
-            </a>
+
+          {/* ✨ Spotlight cards */}
+          <Spotlight className="group mx-auto grid max-w-sm items-start gap-6 lg:max-w-none lg:grid-cols-3 relative z-10">
+            <WorkflowCard
+              title="Built-in Intelligence"
+              text="Automate repetitive steps with AI modules that anticipate your next move."
+            />
+            <WorkflowCard
+              title="Effortless Scaling"
+              text="Expand projects instantly — NoonAI keeps every process fast, aligned, and reliable."
+            />
+            <WorkflowCard
+              title="Custom Pipelines"
+              text="Design flexible workflows that evolve with your product and team goals."
+            />
           </Spotlight>
         </div>
       </div>
     </section>
+  );
+}
+
+// 🔸 Glowing gradient card
+function WorkflowCard({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="group relative h-full overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-gray-950 to-black p-[1px] shadow-[0_0_25px_rgba(255,155,64,0.15)] hover:shadow-[0_0_45px_rgba(255,155,64,0.35)] transition-all duration-700">
+      {/* Animated light sweep */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,180,80,0.25),transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-2xl"></div>
+
+      {/* Inner content */}
+      <div className="relative z-10 flex flex-col items-center text-center rounded-[inherit] bg-gradient-to-b from-[#1b1305] via-[#0e0903] to-black p-8 transition-transform duration-500 group-hover:-translate-y-1">
+        {/* Top glowing accent */}
+        <div className="mb-4 h-1 w-16 rounded-full bg-gradient-to-r from-[#ffb374] via-[#ff9b40] to-[#ffb374] opacity-70"></div>
+
+        <h3 className="text-xl font-semibold bg-gradient-to-r from-[#ffb374] to-[#ff9b40] bg-clip-text text-transparent mb-3">
+          {title}
+        </h3>
+
+        <p className="text-white/80 leading-relaxed">{text}</p>
+
+        {/* Bottom shimmer line */}
+        <div className="mt-6 h-px w-1/2 bg-gradient-to-r from-transparent via-[#ffb374]/50 to-transparent opacity-60"></div>
+      </div>
+    </div>
   );
 }

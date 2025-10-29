@@ -1,103 +1,186 @@
-export const metadata = {
-  title: "Sign Up - Open PRO",
-  description: "Page description",
-};
+"use client";
 
+// (demo only) metadata shown for structure — would normally go in a server file
+// export const metadata = {
+//   title: "Sign Up - Open PRO",
+//   description: "Page description",
+// };
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function SignUp() {
+  const [lit, setLit] = useState(false);
+  const [fadeIn, setFadeIn] = useState(false);
+  const [stars, setStars] = useState<
+    { size: number; top: number; left: number; opacity: number }[]
+  >([]);
+
+  // 🌌 Generate stars
+  useEffect(() => {
+    const generatedStars = Array.from({ length: 20 }).map(() => ({
+      size: Math.random() * 3 + 1,
+      top: Math.random() * 100,
+      left: Math.random() * 100,
+      opacity: Math.random() * 0.7 + 0.3,
+    }));
+    setStars(generatedStars);
+  }, []);
+
+  // 🌗 Fade and glow sequence
+  useEffect(() => {
+    const darknessTimer = setTimeout(() => setFadeIn(true), 600);
+    const lightTimer = setTimeout(() => setLit(true), 1400);
+    return () => {
+      clearTimeout(darknessTimer);
+      clearTimeout(lightTimer);
+    };
+  }, []);
+
   return (
-    <section>
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="py-12 md:py-20">
-          {/* Section header */}
-          <div className="pb-12 text-center">
-            <h1 className="animate-[gradient_6s_linear_infinite] bg-[linear-gradient(to_right,var(--color-gray-200),var(--color-indigo-200),var(--color-gray-50),var(--color-indigo-300),var(--color-gray-200))] bg-[length:200%_auto] bg-clip-text font-nacelle text-3xl font-semibold text-transparent md:text-4xl">
-              Create an account
-            </h1>
+    <section
+      className={`relative flex items-center justify-center min-h-screen overflow-hidden transition-colors duration-[2500ms] ${
+        lit
+          ? "bg-gradient-to-b from-black via-[#1a0f00] to-[#ff9b40]"
+          : "bg-black"
+      }`}
+    >
+      {/* 🌌 Starfield */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {stars.map((star, i) => (
+          <div
+            key={i}
+            className={`absolute rounded-full bg-white transition-opacity duration-[2000ms] ${
+              fadeIn ? "opacity-100" : "opacity-0"
+            }`}
+            style={{
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              top: `${star.top}%`,
+              left: `${star.left}%`,
+              boxShadow: `0 0 ${star.size * 4}px rgba(255,255,255,${star.opacity})`,
+            }}
+          ></div>
+        ))}
+      </div>
+
+      {/* 🌒 Darkness overlay */}
+      <div
+        className={`absolute top-0 left-0 w-full h-full transition-opacity duration-[1500ms] pointer-events-none ${
+          fadeIn ? "opacity-0" : "opacity-100"
+        }`}
+        style={{ backgroundColor: "black" }}
+      ></div>
+
+      {/* 🔥 Ambient glow */}
+      <div
+        className={`absolute inset-0 transition-[box-shadow] duration-[1500ms] ${
+          lit ? "shadow-[0_0_150px_40px_rgba(255,160,80,0.5)]" : ""
+        }`}
+      ></div>
+
+      {/* 🌟 Form container */}
+      <div
+        className={`relative z-10 w-full max-w-md mx-auto text-center px-6 py-12 rounded-3xl backdrop-blur-sm border border-amber-400/20 transition-all duration-[2500ms] ${
+          lit
+            ? "bg-black/40 opacity-100 shadow-[0_0_40px_rgba(255,200,120,0.25)]"
+            : "opacity-0"
+        }`}
+      >
+        <h1
+          className={`text-4xl md:text-5xl font-nacelle font-semibold mb-8 transition-all duration-[2500ms] ${
+            lit
+              ? "text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-yellow-200 to-white opacity-100"
+              : "opacity-0"
+          }`}
+        >
+          Create an Account
+        </h1>
+
+        <form className="space-y-6 text-left">
+          <div>
+            <label
+              htmlFor="name"
+              className="block mb-2 text-sm font-medium text-white/70"
+            >
+              Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              id="name"
+              type="text"
+              required
+              placeholder="Your full name"
+              className="w-full px-4 py-2 rounded-xl bg-white/10 text-white placeholder-white/40 border border-white/20 focus:border-amber-400 focus:outline-none transition-all"
+            />
           </div>
-          {/* Contact form */}
-          <form className="mx-auto max-w-[400px]">
-            <div className="space-y-5">
-              <div>
-                <label
-                  className="mb-1 block text-sm font-medium text-indigo-200/65"
-                  htmlFor="name"
-                >
-                  Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  className="form-input w-full"
-                  placeholder="Your full name"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  className="mb-1 block text-sm font-medium text-indigo-200/65"
-                  htmlFor="name"
-                >
-                  Company Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="company"
-                  type="text"
-                  className="form-input w-full"
-                  placeholder="Your company name"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  className="mb-1 block text-sm font-medium text-indigo-200/65"
-                  htmlFor="email"
-                >
-                  Work Email <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  className="form-input w-full"
-                  placeholder="Your work email"
-                />
-              </div>
-              <div>
-                <label
-                  className="block text-sm font-medium text-indigo-200/65"
-                  htmlFor="password"
-                >
-                  Password <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  className="form-input w-full"
-                  placeholder="Password (at least 10 characters)"
-                />
-              </div>
-            </div>
-            <div className="mt-6 space-y-5">
-              <button className="btn w-full bg-linear-to-t from-indigo-600 to-indigo-500 bg-[length:100%_100%] bg-[bottom] text-white shadow-[inset_0px_1px_0px_0px_--theme(--color-white/.16)] hover:bg-[length:100%_150%]">
-                Register
-              </button>
-              <div className="flex items-center gap-3 text-center text-sm italic text-gray-600 before:h-px before:flex-1 before:bg-linear-to-r before:from-transparent before:via-gray-400/25 after:h-px after:flex-1 after:bg-linear-to-r after:from-transparent after:via-gray-400/25">
-                or
-              </div>
-              <button className="btn relative w-full bg-linear-to-b from-gray-800 to-gray-800/60 bg-[length:100%_100%] bg-[bottom] text-gray-300 before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:border before:border-transparent before:[background:linear-gradient(to_right,var(--color-gray-800),var(--color-gray-700),var(--color-gray-800))_border-box] before:[mask-composite:exclude_!important] before:[mask:linear-gradient(white_0_0)_padding-box,_linear-gradient(white_0_0)] hover:bg-[length:100%_150%]">
-                Sign In with Google
-              </button>
-            </div>
-          </form>
-          {/* Bottom link */}
-          <div className="mt-6 text-center text-sm text-indigo-200/65">
-            Already have an account?{" "}
-            <Link className="font-medium text-indigo-500" href="/signin">
-              Sign in
-            </Link>
+
+          <div>
+            <label
+              htmlFor="company"
+              className="block mb-2 text-sm font-medium text-white/70"
+            >
+              Company Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              id="company"
+              type="text"
+              required
+              placeholder="Your company name"
+              className="w-full px-4 py-2 rounded-xl bg-white/10 text-white placeholder-white/40 border border-white/20 focus:border-amber-400 focus:outline-none transition-all"
+            />
           </div>
-        </div>
+
+          <div>
+            <label
+              htmlFor="email"
+              className="block mb-2 text-sm font-medium text-white/70"
+            >
+              Work Email <span className="text-red-500">*</span>
+            </label>
+            <input
+              id="email"
+              type="email"
+              required
+              placeholder="Your work email"
+              className="w-full px-4 py-2 rounded-xl bg-white/10 text-white placeholder-white/40 border border-white/20 focus:border-amber-400 focus:outline-none transition-all"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="password"
+              className="block mb-2 text-sm font-medium text-white/70"
+            >
+              Password <span className="text-red-500">*</span>
+            </label>
+            <input
+              id="password"
+              type="password"
+              required
+              placeholder="Password (at least 10 characters)"
+              className="w-full px-4 py-2 rounded-xl bg-white/10 text-white placeholder-white/40 border border-white/20 focus:border-amber-400 focus:outline-none transition-all"
+            />
+          </div>
+
+          <button
+            className="w-full py-3 mt-6 rounded-xl text-lg font-medium text-white bg-gradient-to-r from-amber-600/40 to-amber-500/20 shadow-[0_0_20px_rgba(255,180,80,0.3)] backdrop-blur-sm transition-all duration-500 hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(255,200,100,0.5)]"
+          >
+            Register
+          </button>
+
+          <button
+            className="w-full py-3 rounded-xl text-lg font-medium text-white/80 bg-white/10 border border-white/20 hover:bg-amber-400/10 hover:text-white hover:shadow-[0_0_20px_rgba(255,200,120,0.3)] transition-all duration-500"
+          >
+            Sign Up with Google
+          </button>
+        </form>
+
+        <p className="mt-8 text-sm text-white/60">
+          Already have an account?{" "}
+          <Link href="/signin" className="text-amber-300 hover:underline">
+            Sign In
+          </Link>
+        </p>
       </div>
     </section>
   );

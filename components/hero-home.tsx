@@ -1,64 +1,143 @@
-import VideoThumb from "@/public/images/hero-image-01.jpg";
-import ModalVideo from "@/components/modal-video";
+"use client";
+
+import { useEffect, useState } from "react";
 
 export default function HeroHome() {
-  return (
-    <section>
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        {/* Hero content */}
-        <div className="py-12 md:py-20">
-          {/* Section header */}
-          <div className="pb-12 text-center md:pb-20">
-            <h1
-              className="animate-[gradient_6s_linear_infinite] bg-[linear-gradient(to_right,var(--color-gray-200),var(--color-indigo-200),var(--color-gray-50),var(--color-indigo-300),var(--color-gray-200))] bg-[length:200%_auto] bg-clip-text pb-5 font-nacelle text-4xl font-semibold text-transparent md:text-5xl"
-              data-aos="fade-up"
-            >
-              AI-driven tools for product teams
-            </h1>
-            <div className="mx-auto max-w-3xl">
-              <p
-                className="mb-8 text-xl text-indigo-200/65"
-                data-aos="fade-up"
-                data-aos-delay={200}
-              >
-                Our landing page template works on all devices, so you only have
-                to set it up once, and get beautiful results forever.
-              </p>
-              <div className="mx-auto max-w-xs sm:flex sm:max-w-none sm:justify-center">
-                <div data-aos="fade-up" data-aos-delay={400}>
-                  <a
-                    className="btn group mb-4 w-full bg-linear-to-t from-indigo-600 to-indigo-500 bg-[length:100%_100%] bg-[bottom] text-white shadow-[inset_0px_1px_0px_0px_--theme(--color-white/.16)] hover:bg-[length:100%_150%] sm:mb-0 sm:w-auto"
-                    href="#0"
-                  >
-                    <span className="relative inline-flex items-center">
-                      Start Building
-                      <span className="ml-1 tracking-normal text-white/50 transition-transform group-hover:translate-x-0.5">
-                        -&gt;
-                      </span>
-                    </span>
-                  </a>
-                </div>
-                <div data-aos="fade-up" data-aos-delay={600}>
-                  <a
-                    className="btn relative w-full bg-linear-to-b from-gray-800 to-gray-800/60 bg-[length:100%_100%] bg-[bottom] text-gray-300 before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:border before:border-transparent before:[background:linear-gradient(to_right,var(--color-gray-800),var(--color-gray-700),var(--color-gray-800))_border-box] before:[mask-composite:exclude_!important] before:[mask:linear-gradient(white_0_0)_padding-box,_linear-gradient(white_0_0)] hover:bg-[length:100%_150%] sm:ml-4 sm:w-auto"
-                    href="#0"
-                  >
-                    Schedule Demo
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+  const [lit, setLit] = useState(false);
+  const [fadeIn, setFadeIn] = useState(false);
+  const [stars, setStars] = useState<
+    { size: number; top: number; left: number; opacity: number }[]
+  >([]);
 
-          <ModalVideo
-            thumb={VideoThumb}
-            thumbWidth={1104}
-            thumbHeight={576}
-            thumbAlt="Modal video thumbnail"
-            video="videos//video.mp4"
-            videoWidth={1920}
-            videoHeight={1080}
-          />
+  // ⛔ Temporarily lock scrolling on mount
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    const unlockTimer = setTimeout(() => {
+      document.body.style.overflow = "auto";
+    }, 3000);
+    return () => clearTimeout(unlockTimer);
+  }, []);
+
+  // ✨ Generate stars once
+  useEffect(() => {
+    const generatedStars = Array.from({ length: 20 }).map(() => ({
+      size: Math.random() * 3 + 1,
+      top: Math.random() * 100,
+      left: Math.random() * 100,
+      opacity: Math.random() * 0.7 + 0.3,
+    }));
+    setStars(generatedStars);
+  }, []);
+
+  // 🌗 Fade and light timing
+  useEffect(() => {
+    const darknessTimer = setTimeout(() => setFadeIn(true), 800);
+    const lightTimer = setTimeout(() => setLit(true), 1600);
+    return () => {
+      clearTimeout(darknessTimer);
+      clearTimeout(lightTimer);
+    };
+  }, []);
+
+  // 🌀 Smooth scroll handlers
+  const handleExploreClick = () => {
+    window.scrollTo({
+      top: window.innerHeight, // scroll one screen down
+      behavior: "smooth",
+    });
+  };
+
+  const handleMissionClick = () => {
+    window.scrollTo({
+      top: window.innerHeight * 2, // scroll further down (2 screens)
+      behavior: "smooth",
+    });
+  };
+
+  return (
+    <section
+      className={`relative flex items-center justify-center min-h-screen overflow-hidden transition-colors duration-[2500ms] ${
+        lit
+          ? "bg-gradient-to-b from-black via-[#1a0f00] to-[#ff9b40]"
+          : "bg-black"
+      }`}
+    >
+      {/* 🌌 Starfield Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {stars.map((star, i) => (
+          <div
+            key={i}
+            className={`absolute rounded-full bg-white transition-opacity duration-[2000ms] ${
+              fadeIn ? "opacity-100" : "opacity-0"
+            }`}
+            style={{
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              top: `${star.top}%`,
+              left: `${star.left}%`,
+              boxShadow: `0 0 ${star.size * 4}px rgba(255,255,255,${star.opacity})`,
+            }}
+          ></div>
+        ))}
+      </div>
+
+      {/* 🔒 Darkness overlay */}
+      <div
+        className={`absolute top-0 left-0 w-full h-full transition-opacity duration-[1500ms] pointer-events-none ${
+          fadeIn ? "opacity-0" : "opacity-100"
+        }`}
+        style={{ backgroundColor: "black" }}
+      ></div>
+
+      {/* 🔥 Light glow */}
+      <div
+        className={`absolute inset-0 transition-[box-shadow] duration-[1500ms] ${
+          lit ? "shadow-[0_0_150px_40px_rgba(255,160,80,0.5)]" : ""
+        }`}
+      ></div>
+
+      {/* 🌟 Hero Content */}
+      <div className="relative z-10 text-center px-4">
+        <h1
+          className={`text-5xl md:text-6xl font-nacelle font-semibold transition-all duration-[2500ms] ${
+            lit
+              ? "text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-yellow-200 to-white opacity-100"
+              : "text-transparent opacity-0"
+          }`}
+        >
+          Noon AI – Smart Recruiter
+        </h1>
+
+        <p
+          className={`mt-6 text-lg max-w-2xl mx-auto transition-opacity duration-[2500ms] ${
+            lit ? "text-white/80 opacity-100" : "opacity-0"
+          }`}
+        >
+          Noon AI helps recruiters at top companies hire smarter, faster, and
+          more efficiently with the power of artificial intelligence.
+        </p>
+
+        <div
+          className={`mt-10 flex flex-col sm:flex-row gap-4 justify-center transition-opacity duration-[2500ms] ${
+            lit ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          {/* ✅ Primary Button — scroll 1 screen */}
+          <button
+            onClick={handleExploreClick}
+            className="group relative px-8 py-3 text-lg font-medium text-white rounded-2xl border border-amber-400/40 bg-gradient-to-r from-amber-600/30 to-amber-500/10 shadow-[0_0_15px_rgba(255,180,80,0.2)] backdrop-blur-sm transition-all duration-500 hover:from-amber-500/40 hover:to-amber-300/20 hover:shadow-[0_0_30px_rgba(255,200,100,0.4)] hover:scale-[1.03]"
+          >
+            <span className="relative z-10">Explore →</span>
+            <span className="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"></span>
+          </button>
+
+          {/* 🌙 Secondary Button — scroll further */}
+          <button
+            onClick={handleMissionClick}
+            className="relative px-8 py-3 text-lg font-medium text-white/80 rounded-2xl border border-white/20 bg-white/5 backdrop-blur-sm transition-all duration-500 hover:text-white hover:border-amber-400/50 hover:shadow-[0_0_20px_rgba(255,180,80,0.25)] hover:bg-amber-400/10 hover:scale-[1.03]"
+          >
+            Our Mission
+          </button>
         </div>
       </div>
     </section>
