@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import LogoImg from "@/public/images/logo.png";
 
-export default function Header(): JSX.Element {
+export default function Header() {
   return (
     <header className="z-30 mt-2 w-full md:mt-5">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
