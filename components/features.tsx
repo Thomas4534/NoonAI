@@ -7,38 +7,36 @@ import BlurredShape from "@/public/images/blurred-shape.svg";
 
 export default function Features() {
   const [stars, setStars] = useState<
-    {
-      top: string;
-      left: string;
-      width: string;
-      height: string;
-      opacity: number;
-      duration: number;
-      delay: number;
-    }[]
+    { top: string; left: string; size: number; opacity: number }[]
+  >([]);
+  const [ships, setShips] = useState<
+    { top: string; delay: number; duration: number }[]
   >([]);
   const [visible, setVisible] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
 
-  useEffect(() => setMounted(true), []);
-
+  // Initialize background elements
   useEffect(() => {
-    if (!mounted) return;
-    const generatedStars = Array.from({ length: 12 }, () => ({
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      width: `${Math.random() * 1.8 + 0.5}px`,
-      height: `${Math.random() * 1.8 + 0.5}px`,
-      opacity: Math.random() * 0.3 + 0.1,
-      duration: 8 + Math.random() * 6,
-      delay: Math.random() * 5,
-    }));
-    setStars(generatedStars);
-  }, [mounted]);
+    setStars(
+      Array.from({ length: 15 }, () => ({
+        top: `${Math.random() * 100}%`,
+        left: `${Math.random() * 100}%`,
+        size: Math.random() * 2 + 0.5,
+        opacity: Math.random() * 0.4 + 0.2,
+      }))
+    );
 
+    setShips(
+      Array.from({ length: 6 }, () => ({
+        top: `${Math.random() * 100}%`,
+        delay: Math.random() * 10,
+        duration: 10 + Math.random() * 10,
+      }))
+    );
+  }, []);
+
+  // Fade-in observer
   useEffect(() => {
-    if (!mounted) return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -50,46 +48,50 @@ export default function Features() {
     );
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
-  }, [mounted]);
-
-  if (!mounted)
-    return (
-      <section className="relative bg-gradient-to-b from-black via-[#2b1608]/70 to-black overflow-hidden" />
-    );
+  }, []);
 
   return (
     <section
       ref={sectionRef}
-      className="relative bg-gradient-to-b from-black via-[#2b1608]/70 to-black text-amber-100 overflow-hidden"
+      className="relative bg-[linear-gradient(to_bottom,#000_0%,#1a0f00_20%,#2b1608_50%,#1a0f00_80%,#000_100%)] text-amber-100 overflow-hidden"
     >
-      {/* 🌌 Ambient lighting gradients */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(255,180,90,0.12),transparent_70%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_90%,rgba(255,120,0,0.08),transparent_75%)]" />
+      {/* Black top & bottom fades (for smooth section transitions) */}
+      <div className="absolute top-0 inset-x-0 h-48 bg-gradient-to-b from-black to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-black to-transparent pointer-events-none" />
 
-      {/* Fades top & bottom */}
-      <div className="pointer-events-none absolute top-0 inset-x-0 h-48 bg-gradient-to-b from-black via-transparent to-transparent" />
-      <div className="pointer-events-none absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-black via-transparent to-transparent" />
+      {/* Ambient glows */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(255,200,120,0.08),transparent_70%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_90%,rgba(255,150,80,0.08),transparent_75%)] pointer-events-none" />
 
-      {/* Ambient blobs + faint stars */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute left-[20%] top-[25%] w-72 h-72 bg-amber-400/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute right-[15%] bottom-[20%] w-64 h-64 bg-orange-500/10 rounded-full blur-3xl animate-pulse delay-700" />
-        {stars.map((s, i) => (
-          <div
-            key={i}
-            className="absolute bg-amber-300/10 rounded-full blur-[1px]"
-            style={{
-              top: s.top,
-              left: s.left,
-              width: s.width,
-              height: s.height,
-              opacity: s.opacity,
-              animation: `float ${s.duration}s ease-in-out infinite`,
-              animationDelay: `${s.delay}s`,
-            }}
-          />
-        ))}
-      </div>
+      {/* Stars */}
+      {stars.map((s, i) => (
+        <div
+          key={i}
+          className="absolute bg-white rounded-full"
+          style={{
+            top: s.top,
+            left: s.left,
+            width: `${s.size}px`,
+            height: `${s.size}px`,
+            opacity: s.opacity,
+            filter: "blur(0.5px)",
+          }}
+        />
+      ))}
+
+      {/* Moving white dots */}
+      {ships.map((ship, i) => (
+        <div
+          key={i}
+          className="absolute w-[3px] h-[3px] bg-white rounded-full shadow-[0_0_8px_2px_rgba(255,255,255,0.8)]"
+          style={{
+            top: ship.top,
+            left: "-50px",
+            animation: `fly ${ship.duration}s linear infinite`,
+            animationDelay: `${ship.delay}s`,
+          }}
+        />
+      ))}
 
       {/* Background shapes */}
       <Image
@@ -127,7 +129,7 @@ export default function Features() {
             </p>
           </div>
 
-          {/* 🔶 Feature Grid */}
+          {/* Feature grid */}
           <div className="mt-24 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
@@ -164,7 +166,7 @@ export default function Features() {
                 } hover:scale-[1.05] hover:border-amber-400/40 hover:shadow-[0_0_60px_-10px_rgba(255,184,77,0.6)]`}
                 style={{ transitionDelay: `${i * 0.15}s` }}
               >
-                <div className="relative z-10 h-full w-full rounded-2xl bg-gradient-to-br from-[#1a0f10]/70 to-[#2b1608]/40 p-8 backdrop-blur-[1px] group-hover:from-[#2b1608]/60 group-hover:to-[#3b1f10]/60 transition-all duration-700 overflow-visible">
+                <div className="relative z-10 h-full w-full rounded-2xl bg-gradient-to-br from-[#1a0f10]/70 to-[#2b1608]/40 p-8 backdrop-blur-[1px] group-hover:from-[#2b1608]/60 group-hover:to-[#3b1f10]/60 transition-all duration-700">
                   <div className="absolute -top-1 left-6 h-[3px] w-16 bg-gradient-to-r from-amber-400/80 via-orange-300/80 to-yellow-200/70 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                   <h3 className="mb-3 font-nacelle text-lg font-semibold text-amber-100 tracking-wide">
                     {feature.title}
@@ -181,12 +183,20 @@ export default function Features() {
 
       {/* ✨ Animations */}
       <style jsx>{`
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0);
+        @keyframes fly {
+          0% {
+            transform: translateX(0);
+            opacity: 0;
           }
-          50% {
-            transform: translateY(-10px);
+          10% {
+            opacity: 1;
+          }
+          90% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateX(120vw);
+            opacity: 0;
           }
         }
       `}</style>
