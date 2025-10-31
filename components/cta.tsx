@@ -228,7 +228,7 @@ export default function Cta() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h3 className="text-2xl font-semibold text-orange-100 mb-4">Start your free trial</h3>
+          <h3 className="text-2xl font-semibold text-orange-100 mb-4">Start Your Free Trial</h3>
           <p className="text-orange-200/80 mb-8 leading-relaxed">
             Join thousands of teams already using Noon AI to revolutionize their workflow. Sign up in minutes — no credit card required.
           </p>
