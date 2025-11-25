@@ -132,7 +132,7 @@ export default function HeroHome() {
                   className="relative px-10 py-3 text-lg font-semibold text-white/80 rounded-2xl border border-white/20 bg-white/5 backdrop-blur-sm transition-all duration-500 hover:text-white hover:border-amber-400/50 hover:scale-[1.05]"
                   whileHover={{ boxShadow: "0 0 25px rgba(255,180,80,0.3)" }}
                 >
-                  Learn Moree
+                  Learn More
                 </motion.button>
               </motion.div>
             </>
